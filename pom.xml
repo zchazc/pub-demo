@@ -4,11 +4,34 @@
 
   <groupId>space.zchazc</groupId>
   <artifactId>pub-demo</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>0.0.2-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>pub-demo</name>
-  <url>http://maven.apache.org</url>
+  <description> Test for maven central publishing. </description>
+  <url>https://zchazc.space</url>
+
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <name>Zhang Chi</name>
+      <email>zhangchi4work@gmail.com</email>
+      <organizationUrl>https://blog.zchazc.space</organizationUrl>
+    </developer>
+  </developers>
+
+  <scm>
+    <connection>scm:git:git://github.com/zchazc/pub-demo.git</connection>
+    <developerConnection>scm:git:ssh://github.com:zchazc/pub-demo.git</developerConnection>
+    <url>https://github.com/zchazc/pub-demo/tree/master</url>
+  </scm>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -22,4 +45,83 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.sonatype.central</groupId>
+        <artifactId>central-publishing-maven-plugin</artifactId>
+        <version>0.9.0</version>
+        <extensions>true</extensions>
+        <configuration>
+          <publishingServerId>central</publishingServerId>
+          <autoPublish>true</autoPublish>
+          <waitUntil>published</waitUntil>
+        </configuration>
+      </plugin>
+
+      <!-- GPG Signing Plugin -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+        <version>3.2.7</version>
+        <executions>
+          <execution>
+            <id>sign-artifacts</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>sign</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <!-- Retrieves passphrase from settings.xml -->
+          <keyname>zhangchi4work@gmail.com</keyname>
+          <bestPractices>true</bestPractices>
+          <!-- Required for gpg2 to avoid GUI prompts -->
+          <gpgArguments>
+            <arg>--pinentry-mode</arg>
+            <arg>loopback</arg>
+          </gpgArguments>
+        </configuration>
+      </plugin>
+
+      <!-- Source Attachment Plugin -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>3.3.1</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar-no-fork</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Javadoc Generation Plugin -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>3.6.3</version>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <!-- Optional: Configure Javadoc strictness -->
+          <doclint>none</doclint>
+<!--          <quiet>true</quiet>-->
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
 </project>
